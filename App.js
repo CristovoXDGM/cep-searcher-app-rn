@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions, SafeAreaView, Keyboard } from 'react-native';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import logo from "./src/assets/images/Logo.png"
 import api from './src/services/api';
@@ -12,12 +12,14 @@ export default function App() {
   const [hasdata, setHasdata] = useState(false);
 
 
+
   const getCep = async () => {
 
     const result = await api.get(`${cep}/json/`);
     if (result.data != null) {
       setHasdata(true)
       setData(result.data);
+      Keyboard.dismiss();
     }
 
   }
@@ -35,54 +37,62 @@ export default function App() {
 
 
   return (
-    <View style={styles.container}>
-      <Image source={logo} style={styles.imageLogo} />
+    <SafeAreaView style={styles.container}>
 
-      <Text style={styles.title}>Digite o seu Cep</Text>
+      <View >
+        <Image source={logo} style={styles.imageLogo} />
 
-      <TextInput value={cep} placeholder="CEP" style={styles.input} onChangeText={(e) => setCep(e)} />
+        <Text style={styles.title}>Digite o seu Cep</Text>
 
-      <View style={styles.areaBtns}>
+        <TextInput keyboardType="numeric" value={cep} placeholder="CEP" style={styles.input} onChangeText={(e) => setCep(e)} />
 
-        <TouchableOpacity onPress={getCep} style={styles.btnOne}>
-          <Text style={styles.textbtnOne}>Buscar</Text>
-        </TouchableOpacity>
+        <View style={styles.areaBtns}>
 
-        <TouchableOpacity onPress={limpar} style={styles.btnTwo}>
-          <Text style={styles.textbtnTwo}>Limpar</Text>
-        </TouchableOpacity>
+          <TouchableOpacity onPress={getCep} style={styles.btnOne}>
+            <Text style={styles.textbtnOne}>Buscar</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={limpar} style={styles.btnTwo}>
+            <Text style={styles.textbtnTwo}>Limpar</Text>
+          </TouchableOpacity>
+
+        </View>
+
+
+        {hasdata ? <View style={styles.resultado} >
+          <Text style={styles.textStyle}>Cep : {data.cep}</Text>
+          <Text style={styles.textStyle}>Logradouro: {data.logradouro}</Text>
+          <Text style={styles.textStyle}>Localidade: {data.localidade}</Text>
+          <Text style={styles.textStyle}>Bairro: {data.bairro}</Text>
+          <Text style={styles.textStyle}>UF: {data.uf}</Text>
+        </View> : null}
 
       </View>
-
-
-      {hasdata ? <View >
-        <Text style={styles.textStyle}>Cep : {data.cep}</Text>
-        <Text style={styles.textStyle}>Logradouro: {data.logradouro}</Text>
-        <Text style={styles.textStyle}>Localidade: {data.localidade}</Text>
-        <Text style={styles.textStyle}>Bairro: {data.bairro}</Text>
-        <Text style={styles.textStyle}>UF: {data.uf}</Text>
-      </View> : null}
-
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  imageLogo: {
+  resultado: {
     margin: 20,
+    backgroundColor: "#1010"
+  },
+  imageLogo: {
+    margin: 15,
     height: Dimensions.get('window').width / 3,
     width: Dimensions.get('window').width / 3,
     alignSelf: "center"
   },
   textStyle: {
-    textAlign: "center",
-    fontSize: 25,
+    textAlign: "justify",
+    fontSize: 20,
     fontWeight: "bold"
   },
   container: {
     flex: 1,
     backgroundColor: '#ddd',
-
+    justifyContent: "center",
+    alignItems: "center"
   },
   textbtnTwo: {
     fontSize: 14, color: "#fff",
@@ -94,16 +104,17 @@ const styles = StyleSheet.create({
     fontWeight: "bold"
   },
   btnOne: {
-    margin: 20,
+
     borderRadius: 20,
     width: 150,
     backgroundColor: "#117EEB",
     height: 60,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+
   },
   btnTwo: {
-    margin: 20,
+    marginLeft: 30,
     borderRadius: 20,
     width: 150,
     backgroundColor: "#FB506E",
@@ -113,7 +124,9 @@ const styles = StyleSheet.create({
   },
   areaBtns: {
     flexDirection: "row",
-    justifyContent: "center"
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 15
   },
   input: {
     alignSelf: "center",
@@ -121,7 +134,8 @@ const styles = StyleSheet.create({
     height: 40,
     width: "60%",
     textAlign: "center",
-    borderRadius: 10
+    borderRadius: 10,
+    marginBottom: 20
   },
 
   title: {
