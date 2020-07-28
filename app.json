@@ -1,0 +1,12 @@
+{
+  "name": "cep-searcher-rn",
+  "displayName": "cep-searcher-rn",
+  "expo": {
+    "name": "cep-searcher-rn",
+    "slug": "cep-searcher-rn",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
